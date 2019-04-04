@@ -89,6 +89,7 @@ function render() {
 function getFood() {
     for (let i = 0; i < food_x.length; i++) {
         if (mode && snake_x[0] == food_x[i] && snake_y[0] == food_y[i]) {
+            gold.currentTime = 0;
             gold.play();
             food_x.splice(i,1);
             food_y.splice(i,1);
