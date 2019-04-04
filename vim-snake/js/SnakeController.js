@@ -7,7 +7,7 @@ const init_snakeLength = 3; // 不能超过窗口 width 的一半
 let goto_xy = objArray(world.width, world.height);
 let snake_x = new Array(), snake_y = new Array(),
     food_x = new Array(), food_y = new Array();
-let keyCode, mode, foodNum, speed, score, game;
+let keyCode, mode, foodNum = 2, speed, score, game;
 let gameOverAudio = new Audio("assets/over.mp3");
 let bgm = new Audio("assets/bg.mp3");
 let gold = new Audio("assets/sfx.wav");
@@ -15,14 +15,14 @@ let gold = new Audio("assets/sfx.wav");
 function run() {
     // let a = prompt("设置窗口大小(默认50)","50");
     createWorld();
+    console.log("快要升本考试了,难受啊!!! \n Zzzxb -2019年04月04日"+
+        "\n还有bug不知道怎么修复,就这样吧不想搞了。");
     alert("说明书 : \n" +
           "\n普通模式 : esc 或 control + ["+
           "\n插入模式  : i"+
           "\n控制移动 : h, j, k, l" +
           "\n普通模式下移动" +
-          "\n插入模式下吃食物" +
-          "\n                                    "+
-          "Zzzxb-2019年04月04日");
+          "\n插入模式下吃食物");
     init();
     ico();
 }
@@ -88,7 +88,7 @@ function render() {
 
 function getFood() {
     for (let i = 0; i < food_x.length; i++) {
-        if (mode && snake_x[0] == food_x[i] && snake_y[0] == food_y[i]) {
+        if (game && mode && snake_x[0] == food_x[i] && snake_y[0] == food_y[i]) {
             gold.currentTime = 0;
             gold.play();
             food_x.splice(i,1);
@@ -162,11 +162,12 @@ function createFood() {
     }
     for (let i = 0; i < food_x.length && game; i++) {
         goto_xy[food_x[i]][food_y[i]].style.backgroundColor = "#fdb933";
+        // console.error(food_x[i] + " --- " + food_y[i]);
     }
 }
 
 function drawSnake() {
-    for (let i = 0; i < snake_x.length; i++) {
+    for (let i = 0; i < snake_x.length && game; i++) {
             goto_xy[snake_x[i]][snake_y[i]].style.backgroundColor = "#586e3d";
     }
     if ((score + init_snakeLength) < snake_x.length)
