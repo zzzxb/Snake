@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Snake</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,
+	maximum-scale=1.0, user-scalable=no">
+	<link rel="shortcut icon" href="assets/favicon.ico" type="image/x-icon">
+	<style>
+		div{padding:8em 4em}
+		table{border-color:green; background-color:whitesmoke;border:1px solid steelblue;}
+	</style>
+</head>
+<script type="text/javascript">
+	/** 代码很烂等闲下来再改吧，估计也没机会了2333333
+	 * 大家在写代码的时候一定要注意先构思一下再写，不然就会跟我一样，也要注意代码风格*/
+	var blockSize = 20;
+	var line = 19;
+	var row = 19;
+	var score = 0;
+	var play = false;
+	var scoreT;
+    var direction = 0;
+	var snakeLength = 3;
+	var start;
+	var m = -5;
+	var p = 0;
+	var playS = true;
+	var message;
+	var goto_xy = objArray(line, row),
+		snake_x = new Array(),
+		snake_y = new Array();
+	var food_x, food_y;
+	var audio = new Audio("assets/JustBlue.mp3");
+	var overGameSound = new Audio("assets/sfx.wav");
+	var	foodSound = new Audio("assets/exp.wav");
+
+	//start
+	window.onload = function () {
+		initGrid();
+		initSnake();
+		drawSnake();
+		food();
+	}
+	function initGrid() {
+		var table = document.getElementsByTagName("table")[0];
+		message = document.getElementsByTagName("p")[0];
+		scorT = document.getElementById("score");
+		for (var i = 0; i < line; i++) {
+			var lineG = document.createElement("tr");
+			for (var j = 0; j < row; j++) {
+				var rowG = document.createElement("td");
+				rowG.width = 20;
+				rowG.height = 20;
+				goto_xy[i][j] = lineG.appendChild(rowG);
+			}
+			table.appendChild(lineG);
+		}
+	}
+	function initSnake() {
+		for (var i = 1; i <= snakeLength; i++) {
+			snake_x.push(10 - i);
+			snake_y.push(9);
+		}
+	}
+	function drawSnake() {
+		for (var i = 0; i < snake_x.length; i++) {
+			goto_xy[snake_x[i]][snake_y[i]].style.backgroundColor = "Teal";
+		}
+	}
+
+	document.onkeydown = function moveSnake(event) {
+	    if (playS) {
+			audio.loop = true;
+			audio.play();
+			playS = false;
+		}
+		if (!play && event.keyCode == 80 || direction == 1) {
+			play = true;
+			m += 6;
+			window.clearInterval(start);
+			start = window.setInterval("move(m)", 80);
+		} else if (event.keyCode == 82) {
+			location.reload();
+		}
+		if (play) {
+			if ((event.keyCode == 74 || direction == 1 )&& m != -1) {//J
+				m = 1;
+			} else if ((event.keyCode == 72 || direction == 2)&& m != 2) {// h
+				m = -2;
+			} else if ((event.keyCode == 76 || direction == 3)&& m != -2) {//L
+				m = 2;
+			} else if ((event.keyCode == 75 || direction == 4 )&& m != 1) {//k
+				m = -1;
+			}
+		}
+	}
+	function move(m) {
+		if (play && (m == 1 || m == -1 || m == 2 || m == -2)) {
+			if (m == -1) {
+				snake_x.unshift(snake_x[0] - 1); snake_y.unshift(snake_y[0]);
+			} else if (m == 1) {
+				snake_x.unshift(snake_x[0] + 1); snake_y.unshift(snake_y[0]);
+			} else if (m == -2) {
+				snake_x.unshift(snake_x[0]); snake_y.unshift(snake_y[0] - 1);
+			} else if (m == 2) {
+				snake_x.unshift(snake_x[0]); snake_y.unshift(snake_y[0] + 1);
+			}
+		}
+		judge();
+	}
+	function judge() {
+		var over = 'play';
+		for (var i = 1; i < snake_x.length; i++) {
+			if (snake_x[0] == snake_x[i] && snake_y[0] == snake_y[i]) {
+				over = 'over';
+			}
+		}
+		if (snake_x[0] < 0 || snake_x[0] > 18 || snake_y[0] < 0 || snake_y[0] > 18 ||
+			over == 'over') {
+			window.clearInterval(start);
+			foodSound.play();
+			play = false;
+			message.innerHTML = "Game over!!!";
+			if (score == 358) {
+				message.innerHTML = "You win!!!";
+			}
+		} else {
+			if (snake_x.length > snakeLength) {
+				goto_xy[snake_x.pop()][snake_y.pop()].style.backgroundColor = "rgba(0,0,0,0)";
+			}
+			if (snake_x[0] == food_x && snake_y[0] == food_y) {
+				overGameSound.play();
+				snakeLength += 1;
+				scorT.innerHTML = score += 1;
+				food();
+			}
+			drawSnake();
+			randomColor = Math.floor(Math.random() * 8);
+		goto_xy[food_x][food_y].style.backgroundColor = "Gold";
+		}
+
+	}
+	function food() {
+		do {
+			food_x = Math.floor(Math.random() * (line - 1));
+			food_y = Math.floor(Math.random() * (row - 1));
+			for (var i = 0; i < snake_x.length; i++) {
+				if (food_x != snake_x[i] && food_y != snake_y[i]) {
+					p = 1;
+				}
+			}
+		} while (p == 0);
+		goto_xy[food_x][food_y].style.backgroundColor = "Gold";
+	}
+	function objArray(x, y) {
+		var to_xy = new Array(x);
+		for (var i = 0; i < y; i++) {
+			to_xy[i] = new Array(y);
+		};
+		return to_xy;
+	}
+
+</script>
+<body id="ss" style="background-color:LightSkyBlue";>
+	<div align="center" style="padding:20px; color: white;">
+		<p style="height:10px;color:Tomato;font-size: 40px;">来了老弟,毕业了慌不慌.</p>
+		<table border="0" cellspacing="0" cellpadding="0"></table>
+		Score:<span id="score" style="padding:0px;height:20px;font-size:20px">0</span><br>
+		<span><strong>[P]</strong>-play,<strong>[R]</strong>]-reload</span><br>
+		<span><b>[H]</b>-Left---<b>[J]</b>-Down---<b>[K]</b>-up---<b>[L]</b>-right]</span>
+	</div>
+</body>
+
+</html>
