@@ -13,8 +13,10 @@ let bgm = new Audio("assets/bg.mp3");
 let gold = new Audio("assets/sfx.wav");
 
 function run() {
+    // let a = prompt("设置窗口大小(默认50)","50");
     createWorld();
     init();
+    ico();
 }
 
 function init() {
@@ -31,6 +33,40 @@ function init() {
     food_x = [];
     food_y = [];
     initSnake();
+}
+
+function ico() {
+    for(let i = 15; i <= 35; i++) {
+        goto_xy[45][i].style.backgroundColor = "#586e3d";
+        goto_xy[20][i].style.backgroundColor = "#586e3d";
+        if(i <24 || i > 26){
+            goto_xy[43][i].style.backgroundColor = "#586e3d";
+            goto_xy[22][i].style.backgroundColor = "#586e3d";
+        }
+    }
+    for(let i = 22; i < 44; i++){
+            goto_xy[i][24].style.backgroundColor = "#586e3d";
+            goto_xy[i][26].style.backgroundColor = "#586e3d";
+    }
+    for(let i = 20; i <= 30; i++){
+            goto_xy[16][i].style.backgroundColor = "#586e3d";
+            goto_xy[4][i].style.backgroundColor = "#586e3d";
+            goto_xy[i-15][19].style.backgroundColor = "#586e3d";
+            goto_xy[i-15][31].style.backgroundColor = "#586e3d";
+    }
+    goto_xy[44][14].style.backgroundColor = "#586e3d";
+    goto_xy[44][36].style.backgroundColor = "#586e3d";
+    goto_xy[21][14].style.backgroundColor = "#586e3d";
+    goto_xy[21][36].style.backgroundColor = "#586e3d";
+    goto_xy[8][22].style.backgroundColor = "#fdb933";
+    goto_xy[8][28].style.backgroundColor = "#fdb933";
+    goto_xy[14][23].style.backgroundColor = "#586e3d";
+    goto_xy[14][24].style.backgroundColor = "#586e3d";
+    goto_xy[14][25].style.backgroundColor = "#586e3d";
+    goto_xy[14][26].style.backgroundColor = "#586e3d";
+    goto_xy[14][27].style.backgroundColor = "#586e3d";
+    goto_xy[13][23].style.backgroundColor = "#586e3d";
+    goto_xy[13][27].style.backgroundColor = "#586e3d";
 }
 
 function render() {
@@ -52,7 +88,7 @@ function getFood() {
             score ++;
         }
     }
-    document.getElementById("score").innerHTML = " " + score;
+    document.getElementById("score").innerHTML = "<strong>Score : </strong>" + score;
 }
 
 let start;
@@ -96,10 +132,6 @@ function control() {
     gameOverOrwine();
 }
 
-function logo(){
-    goto_xy[10][10].style.backgroundColor = "red";
-}
-
 function  clearScreen() {
     for (let i = 0; i < world.width; i++) {
         for (let j = 0; j < world.height; j++) {
@@ -119,7 +151,7 @@ function createFood() {
             foodNum--;
         }
     }
-    for (let i = 0; i < food_x.length; i++) {
+    for (let i = 0; i < food_x.length && game; i++) {
         goto_xy[food_x[i]][food_y[i]].style.backgroundColor = "#fdb933";
     }
 }
@@ -167,6 +199,7 @@ function createWorld() {
 }
 
 function style(body, box, screen, table) {
+    document.getElementsByTagName("h1")[0].innerHTML = " Vim-Snake "
     // body.style.backgroundColor = "darkcyan";
     body.style.backgroundColor = "#586e3d";
     box.style.textAlign = "center";
@@ -176,6 +209,7 @@ function style(body, box, screen, table) {
     table.style.backgroundColor = "#92ae57";
     table.style.borderpadding = "0";
     table.style.borderSpacing = "0";
+    // document.getElementById("highest").innerHTML = "Highest Score : "
 }
 
 function objArray(line, row) {
@@ -189,26 +223,50 @@ function objArray(line, row) {
 function gameOverOrwine() {
     for (let i = 1; i < snake_x.length; i++) {
         if ((snake_x[0] == snake_x[i]) && (snake_y[0] == snake_y[i])) {
-            game = false;
-            bgm.pause();
-            alert("Game Over !")
-            gameOverAudio.play();
-            clearScreen();
-            init();
+            alertOver();
         }
     }
     if (snake_x[0] < 0 || snake_y[0] < 0 ||
         snake_x[0] > world.width-1 || snake_y[0] > world.height - 1) {
-            game = false;
-            bgm.pause();
-            gameOverAudio.play();
-            alert("Game Over !")
-            clearScreen();
-            init();
+            alertOver();
     }else if ((score + init_snakeLength) == (world.width * world.height) ) {
-        alert("Winner !")
+        alert("Winner !" + "\nScore : " + score)
             clearScreen();
             init();
     }
 
 }
+
+function alertOver(){
+            game = false;
+            bgm.pause();
+            gameOverAudio.play();
+            bgm.currentTime = 0;
+            alert("Game Over !" + "\nScore : " + score)
+            clearScreen();
+            gameOverAudio.pause();
+            gameOverAudio.currentTime = 0;
+            ico();
+            // init();
+}
+
+/* var fs = require('fs')
+function write(){
+var fs = require('fs');
+    fs.writeFile("vim-snake-score", data, function(err){
+        if(err)
+        errconsole.log("ok!");
+    }
+    )}
+
+function read() {
+var fs = require('fs');
+    fs.readFile("vim-snake-socre", function (err,data){
+        if(err){
+            return console.log(err);
+        }else{
+            console.log(data.toString());
+        }
+    })
+}
+*/
