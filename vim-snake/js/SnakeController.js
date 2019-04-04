@@ -15,6 +15,14 @@ let gold = new Audio("assets/sfx.wav");
 function run() {
     // let a = prompt("设置窗口大小(默认50)","50");
     createWorld();
+    alert("说明书 : \n" +
+          "\n普通模式 : esc 或 control + ["+
+          "\n插入模式  : i"+
+          "\n控制移动 : h, j, k, l" +
+          "\n普通模式下移动" +
+          "\n插入模式下吃食物" +
+          "\n                                    "+
+          "Zzzxb-2019年04月04日");
     init();
     ico();
 }
